@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cache Simulator | UIS</title>
+
+    <!-- Hoja de estilos -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Archivo principal de JavaScript -->
+    <script src="js/main.js" defer></script>
+</head>
+
+<body>
+
+    <!-- ENCABEZADO -->
+    <header class="header">
+        <h1>Simulador de Memoria Caché</h1>
+        <p>Sistemas Operacionales | UIS</p>
+    </header>
+
+    <main class="container">
+
+        <!-- SECCIÓN 1: CONFIGURACIÓN -->
+        <section class="card" id="configuration">
+
+            <h2>1. Configuración de caché</h2>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="addressWidth">
+                        Bus de direcciones (m)
+                    </label>
+
+                    <select id="addressWidth">
+                        <option value="4">4 bits</option>
+                        <option value="6">6 bits</option>
+                        <option value="8" selected>8 bits</option>
+                        <option value="12">12 bits</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cacheSize">
+                        Capacidad de caché (C)
+                    </label>
+
+                    <select id="cacheSize">
+                        <option value="8">8 bytes</option>
+                        <option value="16" selected>16 bytes</option>
+                        <option value="32">32 bytes</option>
+                        <option value="64">64 bytes</option>
+                        <option value="128">128 bytes</option>
+                        <option value="256">256 bytes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="blockSize">
+                        Tamaño de bloque (K)
+                    </label>
+
+                    <select id="blockSize">
+                        <option value="4" selected>4 bytes</option>
+                        <option value="8">8 bytes</option>
+                        <option value="16">16 bytes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ways">
+                        Asociatividad (E)
+                    </label>
+
+                    <select id="ways">
+                        <option value="1">1 vía</option>
+                        <option value="2">2 vías</option>
+                        <option value="4">4 vías</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="replacementPolicy">
+                        Política de reemplazo
+                    </label>
+
+                    <select id="replacementPolicy">
+                        <option value="LRU">LRU</option>
+                        <option value="FIFO">FIFO</option>
+                        <option value="Random">Random</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="writeHitPolicy">
+                        Política Write Hit
+                    </label>
+
+                    <select id="writeHitPolicy">
+                        <option value="write-back">Write-back</option>
+                        <option value="write-through">Write-through</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="writeMissPolicy">
+                        Política Write Miss
+                    </label>
+
+                    <select id="writeMissPolicy">
+                        <option value="write-allocate">Write-allocate</option>
+                        <option value="no-write-allocate">No-write-allocate</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button id="configureBtn" class="btn btn-primary">
+                Configurar caché
+            </button>
+
+            <p id="configurationResult"></p>
+
+        </section>
+
+        <!-- SECCIÓN 2: OPERACIONES -->
+        <section class="card" id="operations">
+
+            <h2>2. Operaciones de memoria</h2>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="memoryAddress">
+                        Dirección de memoria
+                    </label>
+                    <input
+                        type="text"
+                        id="memoryAddress"
+                        placeholder="Ejemplo: 0x08"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="memoryValue">
+                        Valor (byte)
+                    </label>
+                    <input
+                        type="text"
+                        id="memoryValue"
+                        placeholder="Ejemplo: 0xFF"
+                    >
+                </div>
+
+            </div>
+
+            <div class="button-group">
+                <button id="readBtn" class="btn btn-success">
+                    Leer (Read)
+                </button>
+
+                <button id="writeBtn" class="btn btn-primary">
+                    Escribir (Write)
+                </button>
+
+                <button id="flushBtn" class="btn btn-warning">
+                    Vaciar (Flush)
+                </button>
+
+                <button id="resetBtn" class="btn btn-danger">
+                    Reiniciar
+                </button>
+            </div>
+
+            <p id="operationResult"></p>
+
+        </section>
+
+        <!-- SECCIÓN 3: VISUALIZACIÓN -->
+        <section class="card" id="visualization">
+
+            <h2>3. Estado de la memoria caché</h2>
+
+            <div class="table-container">
+                <table id="cacheTable">
+
+                    <thead>
+                        <tr>
+                            <th>Set</th>
+                            <th>Way</th>
+                            <th>Valid</th>
+                            <th>Dirty</th>
+                            <th>Tag</th>
+                            <th>Datos</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="cacheTableBody">
+                        <!-- JavaScript generará las filas -->
+                    </tbody>
+
+                </table>
+            </div>
+
+            <h3>Descomposición de dirección</h3>
+
+            <div id="addressBreakdown">
+                <p>Tag: <span id="tagValue">-</span></p>
+                <p>Index: <span id="indexValue">-</span></p>
+                <p>Offset: <span id="offsetValue">-</span></p>
+            </div>
+
+        </section>
+
+        <!-- SECCIÓN 4: ESTADÍSTICAS -->
+        <section class="card" id="statistics">
+
+            <h2>4. Estadísticas</h2>
+
+            <div class="stats-grid">
+
+                <div class="stat-box">
+                    <h3>Accesos</h3>
+                    <p id="totalAccesses">0</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>Hits</h3>
+                    <p id="hitCount">0</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>Misses</h3>
+                    <p id="missCount">0</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>Miss Rate</h3>
+                    <p id="missRate">0%</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>Reemplazos</h3>
+                    <p id="replacementCount">0</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>AMAT</h3>
+                    <p id="amatValue">0 ns</p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SECCIÓN 5: HISTORIAL -->
+        <section class="card" id="history">
+
+            <h2>5. Historial de accesos</h2>
+
+            <div class="table-container">
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Operación</th>
+                            <th>Dirección</th>
+                            <th>Resultado</th>
+                            <th>Tipo de Miss</th>
+                            <th>Set</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="historyTableBody">
+                        <!-- JavaScript agregará los accesos -->
+                    </tbody>
+
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Simulador de Memoria Caché - Sistemas Operacionales</p>
+    </footer>
+
+</body>
+</html>

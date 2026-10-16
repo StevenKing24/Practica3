@@ -1,0 +1,351 @@
+
+/* =========================================
+   1. VARIABLES DE COLORES
+========================================= */
+
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+
+    --success: #16a34a;
+    --warning: #d97706;
+    --danger: #dc2626;
+
+    --background: #f1f5f9;
+    --surface: #ffffff;
+
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+}
+
+/* =========================================
+   2. ESTILOS GENERALES
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--background);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+h1, h2, h3, p {
+    margin-top: 0;
+}
+
+/* =========================================
+   3. ENCABEZADO
+========================================= */
+
+.header {
+    background-color: #0f172a;
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.header h1 {
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.header p {
+    color: #cbd5e1;
+    margin-bottom: 0;
+}
+
+/* =========================================
+   4. CONTENEDOR PRINCIPAL
+========================================= */
+
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.card {
+    background-color: var(--surface);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border);
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.card h2 {
+    font-size: 21px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.card h3 {
+    font-size: 17px;
+}
+
+/* =========================================
+   5. FORMULARIOS
+========================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 7px;
+}
+
+.form-group select,
+.form-group input {
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background-color: white;
+    width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: 2px solid #93c5fd;
+    border-color: var(--primary);
+}
+
+/* =========================================
+   6. BOTONES
+========================================= */
+
+.btn {
+    border: none;
+    border-radius: 6px;
+    padding: 12px 18px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-success {
+    background-color: var(--success);
+}
+
+.btn-success:hover {
+    background-color: #15803d;
+}
+
+.btn-warning {
+    background-color: var(--warning);
+}
+
+.btn-warning:hover {
+    background-color: #b45309;
+}
+
+.btn-danger {
+    background-color: var(--danger);
+}
+
+.btn-danger:hover {
+    background-color: #b91c1c;
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+#configureBtn {
+    margin-top: 20px;
+}
+
+/* =========================================
+   7. TABLAS
+========================================= */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+thead {
+    background-color: #e2e8f0;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+th {
+    font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+tbody tr:hover {
+    background-color: #eff6ff;
+}
+
+/* =========================================
+   8. TAG, INDEX Y OFFSET
+========================================= */
+
+#addressBreakdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+#addressBreakdown p {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 12px;
+    margin: 0;
+    font-weight: 600;
+}
+
+#addressBreakdown span {
+    color: var(--primary);
+}
+
+/* =========================================
+   9. ESTADÍSTICAS
+========================================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stat-box {
+    background-color: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+}
+
+.stat-box h3 {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.stat-box p {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--primary);
+    margin: 0;
+}
+
+/* =========================================
+   10. MENSAJES DE RESULTADO
+========================================= */
+
+#configurationResult,
+#operationResult {
+    margin-top: 15px;
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+}
+
+/* =========================================
+   11. FOOTER
+========================================= */
+
+footer {
+    text-align: center;
+    padding: 25px;
+    background-color: #0f172a;
+    color: #cbd5e1;
+    font-size: 13px;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* =========================================
+   12. DISEÑO RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .header h1 {
+        font-size: 22px;
+    }
+
+    .container {
+        padding: 0 12px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .button-group .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
