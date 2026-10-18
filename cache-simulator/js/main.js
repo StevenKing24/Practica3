@@ -3,15 +3,25 @@
    1. REFERENCIAS A ELEMENTOS HTML
 ========================================= */
 
-const configureBtn = document.getElementById("configureBtn");
-
 const configurationResult = document.getElementById(
     "configurationResult"
 );
 
+const configSummary = document.getElementById("configSummary");
+
 const cacheTableBody = document.getElementById(
     "cacheTableBody"
 );
+
+const tioTable = document.getElementById("tioTable");
+
+const addressInput = document.getElementById("memoryAddress");
+
+const addressReadout = document.getElementById("addressReadout");
+
+// Configuración vigente (null si la elegida es inválida)
+let configActual = null;
+let parametrosActuales = null;
 
 
 /* =========================================
@@ -136,38 +146,225 @@ function generarTablaCache(config, parametros) {
 
     const { E, K } = config;
 
-    const { sets } = parametros;
+    const { sets, indexBits } = parametros;
 
-    // Eliminar filas anteriores
-    cacheTableBody.innerHTML = "";
+    const datos = Array(K).fill("--").join(" ");
+
+    let filas = "";
 
     // Recorrer cada conjunto
     for (let set = 0; set < sets; set++) {
 
+        const alterno = set % 2 === 1 ? "set-alt" : "";
+
+        const setBinario = indexBits > 0
+            ? `<small>${set.toString(2).padStart(indexBits, "0")}</small>`
+            : "";
+
         // Recorrer cada vía
         for (let way = 0; way < E; way++) {
 
-            const fila = document.createElement("tr");
+            // La celda del conjunto abarca todas sus vías
+            const celdaSet = way === 0
+                ? `<th scope="rowgroup" rowspan="${E}" class="set">${set}${setBinario}</th>`
+                : "";
 
-            const datos = Array(K).fill("--").join(" ");
-
-            fila.innerHTML = `
-                <td>${set}</td>
-                <td>${way}</td>
-                <td>0</td>
-                <td>0</td>
-                <td>--</td>
-                <td>${datos}</td>
+            filas += `
+                <tr data-set="${set}" class="${alterno}">
+                    ${celdaSet}
+                    <td>${way}</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td class="tag">--</td>
+                    <td class="datos">${datos}</td>
+                </tr>
             `;
-
-            cacheTableBody.appendChild(fila);
         }
+    }
+
+    cacheTableBody.innerHTML = filas;
+}
+
+
+/* =========================================
+   6. RESUMEN EN EL ENCABEZADO
+========================================= */
+
+function mostrarResumen(parametros) {
+
+    if (parametros === null) {
+        configSummary.innerHTML = "";
+        return;
+    }
+
+    const datos = [
+        ["Memoria", `${parametros.memoriaPrincipal} B`],
+        ["Bloques", parametros.bloques],
+        ["Conjuntos", parametros.sets],
+        ["Bits t / s / b", `${parametros.tagBits} / ${parametros.indexBits} / ${parametros.offsetBits}`]
+    ];
+
+    configSummary.innerHTML = datos
+        .map(([nombre, valor]) => `<div><dt>${nombre}</dt><dd>${valor}</dd></div>`)
+        .join("");
+}
+
+
+/* =========================================
+   7. INTERPRETAR UNA DIRECCIÓN
+   Acepta 0x.. (hex), 0b.. (binario) o decimal.
+   Devuelve { valor } o { error }.
+========================================= */
+
+function interpretarDireccion(texto, m) {
+
+    const limpio = texto.trim().toLowerCase();
+
+    let valor;
+
+    if (/^0x[0-9a-f]+$/.test(limpio)) {
+        valor = parseInt(limpio.slice(2), 16);
+    } else if (/^0b[01]+$/.test(limpio)) {
+        valor = parseInt(limpio.slice(2), 2);
+    } else if (/^\d+$/.test(limpio)) {
+        valor = parseInt(limpio, 10);
+    } else {
+        return { error: "Formato no válido. Usa 0x2C, 0b101100 o 44." };
+    }
+
+    if (valor >= 2 ** m) {
+        const maximo = (2 ** m - 1).toString(16).toUpperCase();
+        return { error: `Fuera de rango: con ${m} bits el máximo es 0x${maximo}.` };
+    }
+
+    return { valor };
+}
+
+
+/* =========================================
+   8. TABLA TAG / INDEX / OFFSET EN BINARIO
+========================================= */
+
+function mostrarDescomposicion() {
+
+    if (configActual === null) {
+        tioTable.innerHTML = "";
+        addressReadout.textContent = "";
+        return;
+    }
+
+    const { m } = configActual;
+
+    const { tagBits, indexBits, offsetBits } = parametrosActuales;
+
+    // Dirección escrita por el usuario (o ninguna)
+    let direccion = null;
+    let error = null;
+
+    if (addressInput.value.trim() !== "") {
+        const resultado = interpretarDireccion(addressInput.value, m);
+        direccion = resultado.error ? null : resultado.valor;
+        error = resultado.error ?? null;
+    }
+
+    addressInput.setAttribute("aria-invalid", error !== null);
+
+    addressReadout.classList.toggle("error", error !== null);
+
+    if (error !== null) {
+        addressReadout.textContent = error;
+    } else if (direccion !== null) {
+        addressReadout.textContent =
+            `0x${direccion.toString(16).toUpperCase()} = ${direccion}`;
+    } else {
+        addressReadout.textContent = "Escribe una dirección para verla en binario";
+    }
+
+    const binario = direccion !== null
+        ? direccion.toString(2).padStart(m, "0")
+        : null;
+
+    // Campos de izquierda (MSB) a derecha (LSB); un campo de 0 bits no se muestra
+    const campos = [
+        { nombre: "Tag", clase: "f-tag", bits: tagBits },
+        { nombre: "Index", clase: "f-index", bits: indexBits },
+        { nombre: "Offset", clase: "f-offset", bits: offsetBits }
+    ].filter(campo => campo.bits > 0);
+
+    let filaCampos = `<th scope="row">Campo</th>`;
+    let filaPosiciones = `<th scope="row">Bit</th>`;
+    let filaBits = `<th scope="row">Binario</th>`;
+    let filaValores = `<th scope="row">Valor</th>`;
+
+    let posicion = m - 1;
+    let inicioCampo = 0;
+
+    for (const campo of campos) {
+
+        const sufijo = campo.bits === 1 ? "bit" : "bits";
+
+        filaCampos += `
+            <th scope="col" colspan="${campo.bits}" class="field inicio ${campo.clase}">
+                ${campo.nombre}<small>${campo.bits} ${sufijo}</small>
+            </th>
+        `;
+
+        for (let i = 0; i < campo.bits; i++) {
+
+            const inicio = i === 0 ? "inicio" : "";
+
+            const bit = binario !== null
+                ? binario[inicioCampo + i]
+                : "–";
+
+            const vacio = binario === null ? "vacio" : "";
+
+            filaPosiciones += `<td class="pos ${inicio}">${posicion}</td>`;
+            filaBits += `<td class="bit ${campo.clase} ${inicio} ${vacio}">${bit}</td>`;
+
+            posicion--;
+        }
+
+        let valor = "–";
+
+        if (binario !== null) {
+            const numero = parseInt(
+                binario.slice(inicioCampo, inicioCampo + campo.bits),
+                2
+            );
+            valor = `${numero}<small>0x${numero.toString(16).toUpperCase()}</small>`;
+        }
+
+        filaValores += `<td colspan="${campo.bits}" class="valor inicio">${valor}</td>`;
+
+        inicioCampo += campo.bits;
+    }
+
+    tioTable.innerHTML = `
+        <thead><tr>${filaCampos}</tr></thead>
+        <tbody>
+            <tr>${filaPosiciones}</tr>
+            <tr>${filaBits}</tr>
+            <tr>${filaValores}</tr>
+        </tbody>
+    `;
+
+    // Resaltar en la tabla de caché el conjunto al que apunta el index
+    const setActivo = binario !== null && indexBits > 0
+        ? parseInt(binario.slice(tagBits, tagBits + indexBits), 2)
+        : binario !== null ? 0 : null;
+
+    for (const fila of cacheTableBody.querySelectorAll("tr[data-set]")) {
+        fila.classList.toggle(
+            "activo",
+            Number(fila.dataset.set) === setActivo
+        );
     }
 }
 
 
 /* =========================================
-   6. CONFIGURAR LA CACHÉ
+   9. CONFIGURAR LA CACHÉ
 ========================================= */
 
 function configurarCache() {
@@ -177,37 +374,46 @@ function configurarCache() {
     const error = validarConfiguracion(config);
 
     if (error !== null) {
+        configActual = null;
+        parametrosActuales = null;
+
         configurationResult.textContent = error;
-        configurationResult.style.color = "#dc2626";
+        configurationResult.classList.add("error");
+
+        cacheTableBody.innerHTML = `
+            <tr class="empty"><td colspan="6">Corrige la configuración para ver la caché.</td></tr>
+        `;
+
+        mostrarResumen(null);
+        mostrarDescomposicion();
         return;
     }
 
-    const parametros = calcularParametros(config);
+    configActual = config;
+    parametrosActuales = calcularParametros(config);
 
-    generarTablaCache(config, parametros);
+    configurationResult.textContent = "";
+    configurationResult.classList.remove("error");
 
-    configurationResult.style.color = "#16a34a";
+    mostrarResumen(parametrosActuales);
+    generarTablaCache(configActual, parametrosActuales);
+    mostrarDescomposicion();
 
-    configurationResult.innerHTML = `
-        <strong>Configuración aplicada correctamente.</strong>
-        <p>Memoria principal: ${parametros.memoriaPrincipal} bytes</p>
-        <p>Bloques de caché: ${parametros.bloques}</p>
-        <p>Conjuntos: ${parametros.sets}</p>
-        <p>Bits de Tag: ${parametros.tagBits}</p>
-        <p>Bits de Index: ${parametros.indexBits}</p>
-        <p>Bits de Offset: ${parametros.offsetBits}</p>
-    `;
-
-    console.log("Configuración:", config);
-    console.log("Parámetros:", parametros);
+    console.log("Configuración:", configActual);
+    console.log("Parámetros:", parametrosActuales);
 }
 
 
 /* =========================================
-   7. EVENTOS
+   10. EVENTOS
 ========================================= */
 
-configureBtn.addEventListener("click", configurarCache);
+// La configuración se aplica apenas cambia cualquier selector.
+for (const select of document.querySelectorAll("#configuration select")) {
+    select.addEventListener("change", configurarCache);
+}
+
+addressInput.addEventListener("input", mostrarDescomposicion);
 
 // Mostrar configuración inicial al cargar.
 configurarCache();

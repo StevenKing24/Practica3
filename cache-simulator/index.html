@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -7,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Cache Simulator | UIS</title>
+
+    <!-- Tipografías -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Hoja de estilos -->
     <link rel="stylesheet" href="css/style.css">
@@ -17,280 +21,230 @@
 
 <body>
 
-    <!-- ENCABEZADO -->
+    <!-- ENCABEZADO: título + parámetros derivados -->
     <header class="header">
-        <h1>Simulador de Memoria Caché</h1>
-        <p>Sistemas Operacionales | UIS</p>
+        <div class="brand">
+            <h1>Simulador de memoria caché</h1>
+            <p>Sistemas Operacionales, UIS</p>
+        </div>
+
+        <dl id="configSummary" class="summary">
+            <!-- JavaScript genera el resumen -->
+        </dl>
     </header>
 
-    <main class="container">
+    <main class="layout">
 
-        <!-- SECCIÓN 1: CONFIGURACIÓN -->
-        <section class="card" id="configuration">
+        <!-- COLUMNA 1: CONFIGURACIÓN Y OPERACIONES -->
+        <aside class="sidebar">
 
-            <h2>1. Configuración de caché</h2>
+            <section id="configuration" class="block">
+                <h2>Configuración</h2>
 
-            <div class="form-grid">
+                <div class="form-grid">
 
-                <div class="form-group">
-                    <label for="addressWidth">
-                        Bus de direcciones (m)
-                    </label>
+                    <div class="form-group">
+                        <label for="addressWidth">Bus de direcciones (m)</label>
+                        <select id="addressWidth">
+                            <option value="4">4 bits</option>
+                            <option value="6">6 bits</option>
+                            <option value="8" selected>8 bits</option>
+                            <option value="12">12 bits</option>
+                        </select>
+                    </div>
 
-                    <select id="addressWidth">
-                        <option value="4">4 bits</option>
-                        <option value="6">6 bits</option>
-                        <option value="8" selected>8 bits</option>
-                        <option value="12">12 bits</option>
-                    </select>
+                    <div class="form-group">
+                        <label for="cacheSize">Capacidad (C)</label>
+                        <select id="cacheSize">
+                            <option value="8">8 bytes</option>
+                            <option value="16" selected>16 bytes</option>
+                            <option value="32">32 bytes</option>
+                            <option value="64">64 bytes</option>
+                            <option value="128">128 bytes</option>
+                            <option value="256">256 bytes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blockSize">Bloque (K)</label>
+                        <select id="blockSize">
+                            <option value="4" selected>4 bytes</option>
+                            <option value="8">8 bytes</option>
+                            <option value="16">16 bytes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ways">Asociatividad (E)</label>
+                        <select id="ways">
+                            <option value="1">1 vía</option>
+                            <option value="2">2 vías</option>
+                            <option value="4">4 vías</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group span-2">
+                        <label for="replacementPolicy">Política de reemplazo</label>
+                        <select id="replacementPolicy">
+                            <option value="LRU">LRU</option>
+                            <option value="FIFO">FIFO</option>
+                            <option value="Random">Random</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="writeHitPolicy">Write hit</label>
+                        <select id="writeHitPolicy">
+                            <option value="write-back">Write-back</option>
+                            <option value="write-through">Write-through</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="writeMissPolicy">Write miss</label>
+                        <select id="writeMissPolicy">
+                            <option value="write-allocate">Write-allocate</option>
+                            <option value="no-write-allocate">No-write-allocate</option>
+                        </select>
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label for="cacheSize">
-                        Capacidad de caché (C)
-                    </label>
+                <p id="configurationResult" class="message" role="status"></p>
+            </section>
 
-                    <select id="cacheSize">
-                        <option value="8">8 bytes</option>
-                        <option value="16" selected>16 bytes</option>
-                        <option value="32">32 bytes</option>
-                        <option value="64">64 bytes</option>
-                        <option value="128">128 bytes</option>
-                        <option value="256">256 bytes</option>
-                    </select>
+            <section id="operations" class="block">
+                <h2>Operaciones</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="memoryAddress">Dirección</label>
+                        <input type="text" id="memoryAddress" placeholder="0x2C" autocomplete="off" spellcheck="false">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="memoryValue">Valor (byte)</label>
+                        <input type="text" id="memoryValue" placeholder="0xFF" autocomplete="off" spellcheck="false">
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="blockSize">
-                        Tamaño de bloque (K)
-                    </label>
+                <p class="hint">Acepta hexadecimal (0x2C), binario (0b101100) o decimal (44).</p>
 
-                    <select id="blockSize">
-                        <option value="4" selected>4 bytes</option>
-                        <option value="8">8 bytes</option>
-                        <option value="16">16 bytes</option>
-                    </select>
+                <div class="button-group">
+                    <button id="readBtn" class="btn btn-primary">Leer</button>
+                    <button id="writeBtn" class="btn btn-primary">Escribir</button>
+                    <button id="flushBtn" class="btn btn-ghost">Vaciar caché</button>
+                    <button id="resetBtn" class="btn btn-ghost btn-danger">Reiniciar</button>
                 </div>
 
-                <div class="form-group">
-                    <label for="ways">
-                        Asociatividad (E)
-                    </label>
+                <p id="operationResult" class="message" role="status"></p>
+            </section>
 
-                    <select id="ways">
-                        <option value="1">1 vía</option>
-                        <option value="2">2 vías</option>
-                        <option value="4">4 vías</option>
-                    </select>
-                </div>
+        </aside>
 
-                <div class="form-group">
-                    <label for="replacementPolicy">
-                        Política de reemplazo
-                    </label>
+        <!-- COLUMNA 2: DESCOMPOSICIÓN + ESTADO DE LA CACHÉ -->
+        <section id="visualization" class="sheet main-sheet">
 
-                    <select id="replacementPolicy">
-                        <option value="LRU">LRU</option>
-                        <option value="FIFO">FIFO</option>
-                        <option value="Random">Random</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="writeHitPolicy">
-                        Política Write Hit
-                    </label>
-
-                    <select id="writeHitPolicy">
-                        <option value="write-back">Write-back</option>
-                        <option value="write-through">Write-through</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="writeMissPolicy">
-                        Política Write Miss
-                    </label>
-
-                    <select id="writeMissPolicy">
-                        <option value="write-allocate">Write-allocate</option>
-                        <option value="no-write-allocate">No-write-allocate</option>
-                    </select>
-                </div>
-
+            <div class="sheet-head">
+                <h2>Descomposición de la dirección</h2>
+                <output id="addressReadout" class="readout" for="memoryAddress"></output>
             </div>
 
-            <button id="configureBtn" class="btn btn-primary">
-                Configurar caché
-            </button>
-
-            <p id="configurationResult"></p>
-
-        </section>
-
-        <!-- SECCIÓN 2: OPERACIONES -->
-        <section class="card" id="operations">
-
-            <h2>2. Operaciones de memoria</h2>
-
-            <div class="form-grid">
-
-                <div class="form-group">
-                    <label for="memoryAddress">
-                        Dirección de memoria
-                    </label>
-                    <input
-                        type="text"
-                        id="memoryAddress"
-                        placeholder="Ejemplo: 0x08"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="memoryValue">
-                        Valor (byte)
-                    </label>
-                    <input
-                        type="text"
-                        id="memoryValue"
-                        placeholder="Ejemplo: 0xFF"
-                    >
-                </div>
-
+            <div class="tio-wrap">
+                <table id="tioTable" class="tio">
+                    <!-- JavaScript genera la tabla Tag / Index / Offset -->
+                </table>
             </div>
 
-            <div class="button-group">
-                <button id="readBtn" class="btn btn-success">
-                    Leer (Read)
-                </button>
-
-                <button id="writeBtn" class="btn btn-primary">
-                    Escribir (Write)
-                </button>
-
-                <button id="flushBtn" class="btn btn-warning">
-                    Vaciar (Flush)
-                </button>
-
-                <button id="resetBtn" class="btn btn-danger">
-                    Reiniciar
-                </button>
+            <div class="sheet-head">
+                <h2>Estado de la caché</h2>
+                <span class="legend">
+                    <span class="key key-index">Conjunto</span>
+                    <span class="key key-tag">Tag</span>
+                </span>
             </div>
 
-            <p id="operationResult"></p>
-
-        </section>
-
-        <!-- SECCIÓN 3: VISUALIZACIÓN -->
-        <section class="card" id="visualization">
-
-            <h2>3. Estado de la memoria caché</h2>
-
-            <div class="table-container">
-                <table id="cacheTable">
-
+            <div class="table-container scroll">
+                <table id="cacheTable" class="data-table">
                     <thead>
                         <tr>
-                            <th>Set</th>
-                            <th>Way</th>
-                            <th>Valid</th>
-                            <th>Dirty</th>
+                            <th>Conjunto</th>
+                            <th>Vía</th>
+                            <th title="Valid">V</th>
+                            <th title="Dirty">D</th>
                             <th>Tag</th>
-                            <th>Datos</th>
+                            <th class="left">Datos</th>
                         </tr>
                     </thead>
-
                     <tbody id="cacheTableBody">
                         <!-- JavaScript generará las filas -->
                     </tbody>
-
-                </table>
-            </div>
-
-            <h3>Descomposición de dirección</h3>
-
-            <div id="addressBreakdown">
-                <p>Tag: <span id="tagValue">-</span></p>
-                <p>Index: <span id="indexValue">-</span></p>
-                <p>Offset: <span id="offsetValue">-</span></p>
-            </div>
-
-        </section>
-
-        <!-- SECCIÓN 4: ESTADÍSTICAS -->
-        <section class="card" id="statistics">
-
-            <h2>4. Estadísticas</h2>
-
-            <div class="stats-grid">
-
-                <div class="stat-box">
-                    <h3>Accesos</h3>
-                    <p id="totalAccesses">0</p>
-                </div>
-
-                <div class="stat-box">
-                    <h3>Hits</h3>
-                    <p id="hitCount">0</p>
-                </div>
-
-                <div class="stat-box">
-                    <h3>Misses</h3>
-                    <p id="missCount">0</p>
-                </div>
-
-                <div class="stat-box">
-                    <h3>Miss Rate</h3>
-                    <p id="missRate">0%</p>
-                </div>
-
-                <div class="stat-box">
-                    <h3>Reemplazos</h3>
-                    <p id="replacementCount">0</p>
-                </div>
-
-                <div class="stat-box">
-                    <h3>AMAT</h3>
-                    <p id="amatValue">0 ns</p>
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- SECCIÓN 5: HISTORIAL -->
-        <section class="card" id="history">
-
-            <h2>5. Historial de accesos</h2>
-
-            <div class="table-container">
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Operación</th>
-                            <th>Dirección</th>
-                            <th>Resultado</th>
-                            <th>Tipo de Miss</th>
-                            <th>Set</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="historyTableBody">
-                        <!-- JavaScript agregará los accesos -->
-                    </tbody>
-
                 </table>
             </div>
 
         </section>
+
+        <!-- COLUMNA 3: ESTADÍSTICAS + HISTORIAL -->
+        <div class="side-right">
+
+            <section id="statistics" class="sheet">
+                <h2>Estadísticas</h2>
+
+                <dl class="stats-grid">
+                    <div class="stat">
+                        <dt>Accesos</dt>
+                        <dd id="totalAccesses">0</dd>
+                    </div>
+                    <div class="stat">
+                        <dt>Hits</dt>
+                        <dd id="hitCount" class="hit">0</dd>
+                    </div>
+                    <div class="stat">
+                        <dt>Misses</dt>
+                        <dd id="missCount" class="miss">0</dd>
+                    </div>
+                    <div class="stat">
+                        <dt>Miss rate</dt>
+                        <dd id="missRate">0%</dd>
+                    </div>
+                    <div class="stat">
+                        <dt>Reemplazos</dt>
+                        <dd id="replacementCount">0</dd>
+                    </div>
+                    <div class="stat">
+                        <dt>AMAT</dt>
+                        <dd id="amatValue">0 ns</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section id="history" class="sheet history">
+                <h2>Historial de accesos</h2>
+
+                <div class="table-container scroll">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Op</th>
+                                <th>Dirección</th>
+                                <th>Resultado</th>
+                                <th>Miss</th>
+                                <th>Conj.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr class="empty">
+                                <td colspan="6">Aún no hay accesos. Lee o escribe una dirección para empezar.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
 
     </main>
-
-    <footer>
-        <p>Simulador de Memoria Caché - Sistemas Operacionales</p>
-    </footer>
 
 </body>
 </html>

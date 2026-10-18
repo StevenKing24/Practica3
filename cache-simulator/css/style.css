@@ -1,22 +1,51 @@
 
 /* =========================================
-   1. VARIABLES DE COLORES
+   1. VARIABLES (TOKENS)
+   Tag / Index / Offset tienen color propio y se
+   reutilizan en todas las tablas.
 ========================================= */
 
 :root {
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
+    --canvas: #E8EBE4;
+    --surface: #FBFCF9;
+    --ink: #16201B;
+    --muted: #5E6A62;
+    --line: #CBD2C6;
+    --line-soft: #E1E5DD;
 
-    --success: #16a34a;
-    --warning: #d97706;
-    --danger: #dc2626;
+    --tag: #3346C8;
+    --index: #0B7F73;
+    --offset: #B86A00;
 
-    --background: #f1f5f9;
-    --surface: #ffffff;
+    --hit: #1E7F45;
+    --miss: #B83226;
 
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
-    --border: #e2e8f0;
+    --focus: #3346C8;
+
+    --sans: "IBM Plex Sans", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+    --radius: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --canvas: #121714;
+        --surface: #1A201C;
+        --ink: #E6EBE4;
+        --muted: #9AA69E;
+        --line: #344039;
+        --line-soft: #26302A;
+
+        --tag: #8C9BFF;
+        --index: #3CC4B4;
+        --offset: #F0A43A;
+
+        --hit: #5BC98A;
+        --miss: #F07D70;
+
+        --focus: #8C9BFF;
+    }
 }
 
 /* =========================================
@@ -29,14 +58,23 @@
 
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: var(--background);
-    color: var(--text-primary);
-    line-height: 1.6;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.45;
+    background-color: var(--canvas);
+    color: var(--ink);
 }
 
-h1, h2, h3, p {
-    margin-top: 0;
+h1, h2, p, dl, dd {
+    margin: 0;
+}
+
+h2 {
+    font-size: 15px;
+    font-weight: 600;
 }
 
 /* =========================================
@@ -44,51 +82,136 @@ h1, h2, h3, p {
 ========================================= */
 
 .header {
-    background-color: #0f172a;
-    color: white;
-    text-align: center;
-    padding: 30px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 24px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--line);
 }
 
-.header h1 {
-    font-size: 28px;
-    margin-bottom: 5px;
+.brand h1 {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
-.header p {
-    color: #cbd5e1;
-    margin-bottom: 0;
+.brand p {
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+.summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+}
+
+.summary div {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.summary dt {
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+.summary dd {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
 }
 
 /* =========================================
-   4. CONTENEDOR PRINCIPAL
+   4. DISTRIBUCIÓN EN TRES COLUMNAS
 ========================================= */
 
-.container {
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 0 20px;
+.layout {
+    display: grid;
+    gap: 16px;
+    padding: 16px;
+    min-height: 0;
 }
 
-.card {
+.sidebar,
+.side-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+}
+
+.block + .block {
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+}
+
+.block h2 {
+    margin-bottom: 10px;
+}
+
+.sheet {
     background-color: var(--surface);
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 25px;
-    border: 1px solid var(--border);
-
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
-.card h2 {
-    font-size: 21px;
+.sheet > h2 {
+    margin-bottom: 12px;
+}
+
+.sheet-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.main-sheet .tio-wrap {
     margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
 }
 
-.card h3 {
-    font-size: 17px;
+/* Pantallas grandes: sin scroll de página.
+   Solo las tablas largas desplazan su propio contenido. */
+@media (min-width: 1100px) and (min-height: 620px) {
+
+    body {
+        height: 100dvh;
+        overflow: hidden;
+    }
+
+    .layout {
+        grid-template-columns: 290px minmax(0, 1fr) 340px;
+    }
+
+    .scroll {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+    }
+
+    .history {
+        flex: 1;
+    }
+}
+
+@media (min-width: 700px) and (max-width: 1099px) {
+    .layout {
+        grid-template-columns: 290px minmax(0, 1fr);
+    }
+
+    .side-right {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 /* =========================================
@@ -97,156 +220,334 @@ h1, h2, h3, p {
 
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.span-2 {
+    grid-column: span 2;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
+    gap: 4px;
+    min-width: 0;
 }
 
 .form-group label {
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 7px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
 }
 
 .form-group select,
 .form-group input {
-    padding: 12px;
-    font-size: 14px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    background-color: white;
     width: 100%;
+    padding: 7px 9px;
+    font: inherit;
+    color: var(--ink);
+    background-color: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
 }
 
-.form-group input:focus,
-.form-group select:focus {
-    outline: 2px solid #93c5fd;
-    border-color: var(--primary);
+.form-group input {
+    font-family: var(--mono);
+}
+
+.form-group input:focus-visible,
+.form-group select:focus-visible,
+.btn:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+}
+
+.form-group input[aria-invalid="true"] {
+    border-color: var(--miss);
+}
+
+.hint {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.message {
+    margin-top: 8px;
+    font-size: 12.5px;
+}
+
+.message:empty {
+    display: none;
+}
+
+.message.error {
+    color: var(--miss);
 }
 
 /* =========================================
    6. BOTONES
 ========================================= */
 
+.button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+}
+
 .btn {
-    border: none;
+    padding: 8px 12px;
+    font: inherit;
+    font-weight: 500;
     border-radius: 6px;
-    padding: 12px 18px;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
+    border: 1px solid transparent;
     cursor: pointer;
-    transition: background-color 0.2s;
 }
 
 .btn-primary {
-    background-color: var(--primary);
+    background-color: var(--ink);
+    color: var(--surface);
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-hover);
+    opacity: 0.88;
 }
 
-.btn-success {
-    background-color: var(--success);
+.btn-ghost {
+    background-color: transparent;
+    color: var(--ink);
+    border-color: var(--line);
 }
 
-.btn-success:hover {
-    background-color: #15803d;
-}
-
-.btn-warning {
-    background-color: var(--warning);
-}
-
-.btn-warning:hover {
-    background-color: #b45309;
+.btn-ghost:hover {
+    background-color: var(--surface);
 }
 
 .btn-danger {
-    background-color: var(--danger);
-}
-
-.btn-danger:hover {
-    background-color: #b91c1c;
-}
-
-.button-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-#configureBtn {
-    margin-top: 20px;
+    color: var(--miss);
 }
 
 /* =========================================
-   7. TABLAS
+   7. TABLA TAG / INDEX / OFFSET
+========================================= */
+
+.f-tag    { --field: var(--tag); }
+.f-index  { --field: var(--index); }
+.f-offset { --field: var(--offset); }
+
+.readout {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.readout.error {
+    font-family: var(--sans);
+    color: var(--miss);
+}
+
+.tio-wrap {
+    overflow-x: auto;
+}
+
+.tio {
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+}
+
+.tio th,
+.tio td {
+    padding: 4px 0;
+    min-width: 30px;
+    text-align: center;
+    border-bottom: 1px solid var(--line-soft);
+}
+
+.tio th[scope="row"] {
+    padding-right: 14px;
+    text-align: left;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* Fila 1: nombre del campo y número de bits */
+.tio .field {
+    padding: 6px 8px;
+    color: var(--field);
+    font-weight: 600;
+    border-bottom: 2px solid var(--field);
+}
+
+.tio .field small {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--muted);
+}
+
+/* Fila 2: posición del bit */
+.tio .pos {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+}
+
+/* Fila 3: bits en binario, el centro de la vista */
+.tio .bit {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--field);
+    background-color: color-mix(in srgb, var(--field) 10%, transparent);
+}
+
+.tio .bit.vacio {
+    color: var(--line);
+}
+
+/* Fila 4: valor del campo */
+.tio .valor {
+    padding: 6px 8px;
+    font-family: var(--mono);
+    font-weight: 500;
+}
+
+.tio .valor small {
+    margin-left: 4px;
+    font-size: 11.5px;
+    color: var(--muted);
+}
+
+/* Separación visible entre campos */
+.tio .inicio {
+    border-left: 2px solid var(--surface);
+}
+
+.tio .bit.inicio {
+    box-shadow: inset 2px 0 0 var(--surface);
+}
+
+/* =========================================
+   8. TABLAS DE DATOS (CACHÉ E HISTORIAL)
 ========================================= */
 
 .table-container {
     width: 100%;
     overflow-x: auto;
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
 }
 
-table {
+.data-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 14px;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
 }
 
-thead {
-    background-color: #e2e8f0;
-}
-
-th, td {
-    padding: 12px;
-    border: 1px solid var(--border);
+.data-table th,
+.data-table td {
+    padding: 5px 10px;
     text-align: center;
+    border-bottom: 1px solid var(--line-soft);
+    white-space: nowrap;
 }
 
-th {
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--surface);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+}
+
+/* El historial vive en una columna angosta */
+.history .data-table th,
+.history .data-table td {
+    padding: 5px 5px;
+}
+
+.data-table .left {
+    text-align: left;
+}
+
+.data-table .mono {
+    font-family: var(--mono);
+}
+
+.data-table .set {
     font-weight: 600;
+    border-right: 1px solid var(--line-soft);
 }
 
-tbody tr:nth-child(even) {
-    background-color: #f8fafc;
+.data-table .set small {
+    display: block;
+    font-family: var(--mono);
+    font-weight: 500;
+    color: var(--index);
 }
 
-tbody tr:hover {
-    background-color: #eff6ff;
+.data-table .tag {
+    font-family: var(--mono);
+    color: var(--tag);
 }
 
-/* =========================================
-   8. TAG, INDEX Y OFFSET
-========================================= */
+.data-table .datos {
+    font-family: var(--mono);
+    text-align: left;
+    color: var(--muted);
+}
 
-#addressBreakdown {
+/* Conjuntos alternos para distinguir los grupos de vías */
+.data-table tr.set-alt {
+    background-color: color-mix(in srgb, var(--canvas) 45%, transparent);
+}
+
+/* Conjunto señalado por el index de la dirección actual */
+.data-table tr.activo {
+    background-color: color-mix(in srgb, var(--index) 14%, transparent);
+}
+
+.data-table tr.activo .set {
+    box-shadow: inset 3px 0 0 var(--index);
+}
+
+.data-table .empty td {
+    padding: 18px 12px;
+    color: var(--muted);
+    white-space: normal;
+}
+
+.hit  { color: var(--hit); }
+.miss { color: var(--miss); }
+
+/* Leyenda de colores */
+.legend {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 15px;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--muted);
 }
 
-#addressBreakdown p {
-    background-color: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 6px;
-    padding: 12px;
-    margin: 0;
-    font-weight: 600;
+.key::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 5px;
+    border-radius: 2px;
+    background-color: var(--k);
 }
 
-#addressBreakdown span {
-    color: var(--primary);
-}
+.key-index { --k: var(--index); }
+.key-tag   { --k: var(--tag); }
 
 /* =========================================
    9. ESTADÍSTICAS
@@ -255,97 +556,33 @@ tbody tr:hover {
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 12px 8px;
 }
 
-.stat-box {
-    background-color: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
+.stat dt {
+    font-size: 12px;
+    color: var(--muted);
 }
 
-.stat-box h3 {
-    font-size: 15px;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-}
-
-.stat-box p {
-    font-size: 28px;
-    font-weight: bold;
-    color: var(--primary);
-    margin: 0;
+.stat dd {
+    font-size: 22px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
 }
 
 /* =========================================
-   10. MENSAJES DE RESULTADO
+   10. MÓVIL
 ========================================= */
 
-#configurationResult,
-#operationResult {
-    margin-top: 15px;
-    color: var(--text-secondary);
-    overflow-wrap: anywhere;
-}
+@media (max-width: 699px) {
 
-/* =========================================
-   11. FOOTER
-========================================= */
-
-footer {
-    text-align: center;
-    padding: 25px;
-    background-color: #0f172a;
-    color: #cbd5e1;
-    font-size: 13px;
-}
-
-footer p {
-    margin: 0;
-}
-
-/* =========================================
-   12. DISEÑO RESPONSIVE
-========================================= */
-
-@media (max-width: 768px) {
-
-    .header h1 {
-        font-size: 22px;
+    .header,
+    .layout {
+        padding-left: 16px;
+        padding-right: 16px;
     }
 
-    .container {
-        padding: 0 12px;
+    .side-right {
+        display: flex;
     }
-
-    .card {
-        padding: 18px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-
-    .button-group {
-        flex-direction: column;
-    }
-
-    .button-group .btn {
-        width: 100%;
-    }
-}
-
-@media (max-width: 400px) {
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
 }
