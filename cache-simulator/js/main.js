@@ -250,6 +250,7 @@ function mostrarDescomposicion() {
     if (configActual === null) {
         tioTable.innerHTML = "";
         addressReadout.textContent = "";
+        mostrarExplicacion(null)
         return;
     }
 
@@ -283,6 +284,7 @@ function mostrarDescomposicion() {
     const binario = direccion !== null
         ? direccion.toString(2).padStart(m, "0")
         : null;
+        mostrarExplicacion(direccion);
 
     // Campos de izquierda (MSB) a derecha (LSB); un campo de 0 bits no se muestra
     const campos = [
@@ -406,6 +408,53 @@ function configurarCache() {
 
 
 /* =========================================
+   EXPLICACIÓN DEL DIRECCIONAMIENTO
+========================================= */
+
+function mostrarExplicacion(direccion) {
+    const panel = document.getElementById("explanationContent");
+
+    if (direccion === null || !configActual) {
+        panel.textContent = "Introduce una dirección válida para ver los cálculos.";
+        return;
+    }
+
+    const { m, C, K, E } = configActual;
+    const { sets, tagBits, indexBits, offsetBits } = parametrosActuales;
+
+    const bloque = Math.floor(direccion / K);
+    const conjunto = bloque % sets;
+    const offset = direccion % K;
+    const tag = Math.floor(bloque / sets);
+    const base = bloque * K;
+
+    const hex = n => "0x" + n.toString(16).toUpperCase()
+        .padStart(Math.ceil(m / 4), "0");
+
+    panel.innerHTML = `
+        <p><strong>1. Número de conjuntos:</strong></p>
+        <p>S = C / (K × E) = ${C} / (${K} × ${E}) = ${sets}</p>
+
+        <hr>
+
+        <p><strong>2. Distribución de bits:</strong></p>
+        <p>Offset = log₂(${K}) = ${offsetBits} bits</p>
+        <p>Index = log₂(${sets}) = ${indexBits} bits</p>
+        <p>Tag = ${m} − ${indexBits} − ${offsetBits} = ${tagBits} bits</p>
+
+        <hr>
+
+        <p><strong>3. Resultado del direccionamiento:</strong></p>
+        <p>Bloque = ⌊${direccion} / ${K}⌋ = ${bloque}</p>
+        <p>Conjunto = ${bloque} mod ${sets} = <strong>${conjunto}</strong></p>
+        <p>Offset = ${direccion} mod ${K} = <strong>${offset}</strong></p>
+        <p>Tag = ⌊${bloque} / ${sets}⌋ = <strong>${tag}</strong></p>
+        <p>Direcciones del bloque: <strong>${hex(base)} – ${hex(base + K - 1)}</strong></p>
+    `;
+}
+
+
+/* =========================================
    10. EVENTOS
 ========================================= */
 
@@ -417,6 +466,8 @@ generateBtn.addEventListener("click", configurarCache);
 // Mostrar una indicación inicial
 configurationResult.textContent =
     "Selecciona los parámetros y genera el sistema.";
+
+addressInput.addEventListener("input", mostrarDescomposicion);
 
 /* =========================================
    10. Rango de direcciones
