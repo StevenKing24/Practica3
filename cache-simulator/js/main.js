@@ -372,6 +372,7 @@ function configurarCache() {
     const config = obtenerConfiguracion();
 
     const error = validarConfiguracion(config);
+    mostrarRangoDirecciones(config.m);
 
     if (error !== null) {
         configActual = null;
@@ -416,3 +417,19 @@ generateBtn.addEventListener("click", configurarCache);
 // Mostrar una indicación inicial
 configurationResult.textContent =
     "Selecciona los parámetros y genera el sistema.";
+
+/* =========================================
+   10. Rango de direcciones
+========================================= */
+
+function mostrarRangoDirecciones(m) {
+    const maximo = 2 ** m - 1;
+    const digitos = Math.ceil(m / 4);
+
+    const hex = maximo.toString(16)
+        .toUpperCase()
+        .padStart(digitos, "0");
+
+    document.getElementById("addressRange").textContent =
+        `Rango disponible: 0x${"0".repeat(digitos)} - 0x${hex}`;
+}
