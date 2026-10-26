@@ -408,12 +408,11 @@ function configurarCache() {
    10. EVENTOS
 ========================================= */
 
-// La configuración se aplica apenas cambia cualquier selector.
-for (const select of document.querySelectorAll("#configuration select")) {
-    select.addEventListener("change", configurarCache);
-}
+const generateBtn = document.getElementById("generateBtn");
 
-addressInput.addEventListener("input", mostrarDescomposicion);
+// Aplicar parámetros solo al presionar el botón
+generateBtn.addEventListener("click", configurarCache);
 
-// Mostrar configuración inicial al cargar.
-configurarCache();
+// Mostrar una indicación inicial
+configurationResult.textContent =
+    "Selecciona los parámetros y genera el sistema.";

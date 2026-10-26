@@ -49,6 +49,7 @@
                             <option value="4">4 bits</option>
                             <option value="6">6 bits</option>
                             <option value="8" selected>8 bits</option>
+                            <option value="10">10 bits</option>
                             <option value="12">12 bits</option>
                         </select>
                     </div>
@@ -68,9 +69,9 @@
                     <div class="form-group">
                         <label for="blockSize">Bloque (K)</label>
                         <select id="blockSize">
-                            <option value="4" selected>4 bytes</option>
+                            <option value="2" selected>2 bytes</option>
+                            <option value="4">4 bytes</option>
                             <option value="8">8 bytes</option>
-                            <option value="16">16 bytes</option>
                         </select>
                     </div>
 
@@ -86,9 +87,10 @@
                     <div class="form-group span-2">
                         <label for="replacementPolicy">Política de reemplazo</label>
                         <select id="replacementPolicy">
-                            <option value="LRU">LRU</option>
-                            <option value="FIFO">FIFO</option>
-                            <option value="Random">Random</option>
+                            <option value="LRU">LRU - Menos Reciente Usada</option>
+                            <option value="LFU">LFU - Menos Frecuentemente Usada</option>
+                            <option value="FIFO">FIFO - Primero en entrar, primero en salir</option>
+                            <option value="Random">Random - Aleatorio</option>
                         </select>
                     </div>
 
@@ -109,7 +111,9 @@
                     </div>
 
                 </div>
-
+                <button id="generateBtn" class="btn btn-primary">
+                    Generar sistema
+                </button>
                 <p id="configurationResult" class="message" role="status"></p>
             </section>
 
@@ -246,12 +250,9 @@
 
     </main>
 
-<<<<<<< HEAD
-=======
     <footer>
         <p>Simulador de Memoria Caché - Operacionales</p>
     </footer>
 
->>>>>>> 32d726d (Organizando los archivos y actualizando a la configuración actual (README, index y gitignore))
 </body>
 </html>

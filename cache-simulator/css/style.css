@@ -586,3 +586,20 @@ h2 {
         display: flex;
     }
 }
+
+/* =========================================
+   11. Botón para generar el sistema
+========================================= */
+
+#generateBtn {
+    width: 100%;
+    margin-top: 14px;
+}
+
+#generateBtn:hover {
+    opacity: 0.85;
+}
+
+#generateBtn:active {
+    transform: scale(0.99);
+}
