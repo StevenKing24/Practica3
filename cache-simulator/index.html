@@ -2,275 +2,1891 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Cache Simulator | UIS</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <!-- Tipografías -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta
+        name="description"
+        content="Simulador interactivo de memoria caché. Sistemas Operacionales UIS."
+    >
 
-    <!-- Hoja de estilos -->
-    <link rel="stylesheet" href="css/style.css">
+    <title>
+        Simulador de Memoria Caché 351 | UIS
+    </title>
 
-    <!-- Archivo principal de JavaScript -->
-    <script src="js/main.js" defer></script>
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
 </head>
 
 <body>
 
-    <!-- ENCABEZADO: título + parámetros derivados -->
+    <!-- ================================================= -->
+    <!-- 1. ENCABEZADO                                     -->
+    <!-- ================================================= -->
+
     <header class="header">
-        <div class="brand">
-            <h1>Simulador de memoria caché</h1>
-            <p>Sistemas Operacionales, UIS</p>
+
+        <div class="header-content">
+
+            <div class="header-title">
+
+                <h1>
+                    🧠 Simulador de Memoria Caché 351
+                </h1>
+
+                <p>
+                    Sistemas Operacionales |
+                    Universidad Industrial de Santander
+                </p>
+
+            </div>
+
+            <div class="header-buttons">
+
+                <button
+                    id="btnHelp"
+                    class="btn btn-secondary"
+                    type="button"
+                >
+                    ❔ Ayuda
+                </button>
+
+                <button
+                    id="btnReset"
+                    class="btn btn-danger"
+                    type="button"
+                >
+                    ↻ Reiniciar
+                </button>
+
+            </div>
+
         </div>
 
-        <dl id="configSummary" class="summary">
-            <!-- JavaScript genera el resumen -->
-        </dl>
     </header>
 
-    <main class="layout">
 
-        <!-- COLUMNA 1: CONFIGURACIÓN Y OPERACIONES -->
-        <aside class="sidebar">
+    <!-- ================================================= -->
+    <!-- 2. CONTENEDOR PRINCIPAL                           -->
+    <!-- ================================================= -->
 
-            <section id="configuration" class="block">
-                <h2>Configuración</h2>
+    <main class="main-container">
 
-                <div class="form-grid">
+        <div class="dashboard-grid">
 
-                    <div class="form-group">
-                        <label for="addressWidth">Bus de direcciones (m)</label>
-                        <select id="addressWidth">
-                            <option value="4">4 bits</option>
-                            <option value="6">6 bits</option>
-                            <option value="8" selected>8 bits</option>
-                            <option value="10">10 bits</option>
-                            <option value="12">12 bits</option>
-                        </select>
+
+            <!-- ========================================= -->
+            <!-- PANEL 1: CONFIGURACIÓN                     -->
+            <!-- ========================================= -->
+
+            <section
+                class="panel"
+                id="panelParametros"
+            >
+
+                <div class="panel-header">
+
+                    <h2>
+                        ⚙️ Parámetros del sistema
+                    </h2>
+
+                </div>
+
+                <div class="panel-body">
+
+                    <fieldset class="configuration-fieldset">
+
+                        <legend>
+                            Configuración de memoria
+                        </legend>
+
+                        <p class="config-helper">
+                            Selecciona los parámetros de la memoria
+                            principal y la organización de caché.
+                        </p>
+
+
+                        <!-- BUS DE DIRECCIONES -->
+
+                        <div class="form-group">
+
+                            <label for="addressWidth">
+                                Bus de direcciones (m)
+                            </label>
+
+                            <select id="addressWidth">
+
+                                <option value="4">
+                                    4 bits
+                                </option>
+
+                                <option value="6">
+                                    6 bits
+                                </option>
+
+                                <option value="8" selected>
+                                    8 bits
+                                </option>
+
+                                <option value="12">
+                                    12 bits
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- CAPACIDAD DE CACHÉ -->
+
+                        <div class="form-group">
+
+                            <label for="cacheSize">
+                                Tamaño de caché (C)
+                            </label>
+
+                            <select id="cacheSize">
+
+                                <option value="8">
+                                    8 bytes
+                                </option>
+
+                                <option value="16" selected>
+                                    16 bytes
+                                </option>
+
+                                <option value="32">
+                                    32 bytes
+                                </option>
+
+                                <option value="64">
+                                    64 bytes
+                                </option>
+
+                                <option value="128">
+                                    128 bytes
+                                </option>
+
+                                <option value="256">
+                                    256 bytes
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- TAMAÑO DE BLOQUE -->
+
+                        <div class="form-group">
+
+                            <label for="blockSize">
+                                Tamaño de bloque (K)
+                            </label>
+
+                            <select id="blockSize">
+
+                                <option value="2">
+                                    2 bytes
+                                </option>
+
+                                <option value="4" selected>
+                                    4 bytes
+                                </option>
+
+                                <option value="8">
+                                    8 bytes
+                                </option>
+
+                                <option value="16">
+                                    16 bytes
+                                </option>
+
+                                <option value="32">
+                                    32 bytes
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- ASOCIATIVIDAD -->
+
+                        <div class="form-group">
+
+                            <label for="associativity">
+                                Grado de asociatividad (E)
+                            </label>
+
+                            <select id="associativity">
+
+                                <option value="1" selected>
+                                    1 vía
+                                </option>
+
+                                <option value="2">
+                                    2 vías
+                                </option>
+
+                                <option value="4">
+                                    4 vías
+                                </option>
+
+                                <option value="8">
+                                    8 vías
+                                </option>
+
+                                <option value="16">
+                                    16 vías
+                                </option>
+
+                                <option value="32">
+                                    32 vías
+                                </option>
+
+                                <option value="64">
+                                    64 vías
+                                </option>
+
+                                <option value="128">
+                                    128 vías
+                                </option>
+
+                            </select>
+
+                            <small class="form-hint">
+                                E representa las vías por conjunto.
+                            </small>
+
+                        </div>
+
+
+                        <!-- REEMPLAZO -->
+
+                        <div class="form-group">
+
+                            <label for="replacementPolicy">
+                                Política de reemplazo
+                            </label>
+
+                            <select id="replacementPolicy">
+
+                                <option value="LRU" selected>
+                                    LRU
+                                </option>
+
+                                <option value="FIFO">
+                                    FIFO
+                                </option>
+
+                                <option value="LFU">
+                                    LFU
+                                </option>
+
+                                <option value="RANDOM">
+                                    Aleatoria
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- WRITE HIT -->
+
+                        <div class="form-group">
+
+                            <label for="writeHitPolicy">
+                                Política Write Hit
+                            </label>
+
+                            <select id="writeHitPolicy">
+
+                                <option
+                                    value="write-back"
+                                    selected
+                                >
+                                    Write-back
+                                </option>
+
+                                <option value="write-through">
+                                    Write-through
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- WRITE MISS -->
+
+                        <div class="form-group">
+
+                            <label for="writeMissPolicy">
+                                Política Write Miss
+                            </label>
+
+                            <select id="writeMissPolicy">
+
+                                <option
+                                    value="write-allocate"
+                                    selected
+                                >
+                                    Write-allocate
+                                </option>
+
+                                <option value="no-write-allocate">
+                                    No-write-allocate
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- MAPEO RÁPIDO -->
+
+                        <div class="mapping-shortcuts">
+
+                            <label>
+                                Configuración rápida
+                            </label>
+
+                            <div class="mapping-buttons">
+
+                                <button
+                                    id="btnDirectMapping"
+                                    class="btn btn-mapping"
+                                    type="button"
+                                >
+                                    Mapeo directo
+                                </button>
+
+                                <button
+                                    id="btnFullMapping"
+                                    class="btn btn-mapping"
+                                    type="button"
+                                >
+                                    Totalmente asociativo
+                                </button>
+
+                            </div>
+
+                            <div
+                                id="mappingDescription"
+                                class="mapping-description"
+                            >
+                                Organización: mapeo directo.
+                            </div>
+
+                        </div>
+
+                    </fieldset>
+
+
+                    <!-- ================================= -->
+                    <!-- RESUMEN DEL SISTEMA               -->
+                    <!-- ================================= -->
+
+                    <div class="configuration-summary">
+
+                        <div class="summary-header">
+
+                            <h3>
+                                📊 Resumen del sistema
+                            </h3>
+
+                            <span
+                                id="systemStatus"
+                                class="system-status"
+                            >
+                                Sin generar
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            id="configurationInfo"
+                            class="summary-grid"
+                        >
+
+                            <div class="summary-item">
+
+                                <span>RAM</span>
+
+                                <strong id="summaryMemory">
+                                    --
+                                </strong>
+
+                            </div>
+
+                            <div class="summary-item">
+
+                                <span>Caché</span>
+
+                                <strong id="summaryCache">
+                                    --
+                                </strong>
+
+                            </div>
+
+                            <div class="summary-item">
+
+                                <span>Bloque</span>
+
+                                <strong id="summaryBlock">
+                                    --
+                                </strong>
+
+                            </div>
+
+                            <div class="summary-item">
+
+                                <span>Líneas</span>
+
+                                <strong id="summaryLines">
+                                    --
+                                </strong>
+
+                            </div>
+
+                            <div class="summary-item">
+
+                                <span>Conjuntos</span>
+
+                                <strong id="summarySets">
+                                    --
+                                </strong>
+
+                            </div>
+
+                            <div class="summary-item">
+
+                                <span>Vías</span>
+
+                                <strong id="summaryWays">
+                                    --
+                                </strong>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
-                    <div class="form-group">
-                        <label for="cacheSize">Capacidad (C)</label>
-                        <select id="cacheSize">
-                            <option value="8">8 bytes</option>
-                            <option value="16" selected>16 bytes</option>
-                            <option value="32">32 bytes</option>
-                            <option value="64">64 bytes</option>
-                            <option value="128">128 bytes</option>
-                            <option value="256">256 bytes</option>
-                        </select>
+
+                    <!-- ================================= -->
+                    <!-- GENERACIÓN PASO A PASO            -->
+                    <!-- ================================= -->
+
+                    <div class="generation-options">
+
+                        <label class="checkbox-modern">
+
+                            <input
+                                type="checkbox"
+                                id="generationStepByStep"
+                            >
+
+                            <span class="checkbox-slider"></span>
+
+                            <span>
+                                Generar sistema paso a paso
+                            </span>
+
+                        </label>
+
+                        <p class="option-description">
+                            Muestra los cálculos y las etapas
+                            de construcción de la memoria
+                            principal y de la caché.
+                        </p>
+
                     </div>
 
-                    <div class="form-group">
-                        <label for="blockSize">Bloque (K)</label>
-                        <select id="blockSize">
-                            <option value="2" selected>2 bytes</option>
-                            <option value="4">4 bytes</option>
-                            <option value="8">8 bytes</option>
-                        </select>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="ways">Asociatividad (E)</label>
-                        <select id="ways">
-                            <option value="1">1 vía</option>
-                            <option value="2">2 vías</option>
-                            <option value="4">4 vías</option>
-                        </select>
-                    </div>
+                    <!-- BOTÓN GENERAR -->
 
-                    <div class="form-group span-2">
-                        <label for="replacementPolicy">Política de reemplazo</label>
-                        <select id="replacementPolicy">
-                            <option value="LRU">LRU - Menos Reciente Usada</option>
-                            <option value="LFU">LFU - Menos Frecuentemente Usada</option>
-                            <option value="FIFO">FIFO - Primero en entrar, primero en salir</option>
-                            <option value="Random">Random - Aleatorio</option>
-                        </select>
-                    </div>
+                    <button
+                        id="btnGenerate"
+                        class="btn btn-primary btn-full"
+                        type="button"
+                    >
+                        ⚡ Generar sistema
+                    </button>
 
-                    <div class="form-group">
-                        <label for="writeHitPolicy">Write hit</label>
-                        <select id="writeHitPolicy">
-                            <option value="write-back">Write-back</option>
-                            <option value="write-through">Write-through</option>
-                        </select>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="writeMissPolicy">Write miss</label>
-                        <select id="writeMissPolicy">
-                            <option value="write-allocate">Write-allocate</option>
-                            <option value="no-write-allocate">No-write-allocate</option>
-                        </select>
+                    <!-- NAVEGACIÓN DE GENERACIÓN -->
+
+                    <div
+                        id="generationControls"
+                        class="step-controls"
+                        hidden
+                    >
+
+                        <div class="step-progress">
+
+                            <span id="generationStepLabel">
+                                Paso 0 de 7
+                            </span>
+
+                            <div class="progress-track">
+
+                                <div
+                                    id="generationProgress"
+                                    class="progress-fill"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="step-buttons">
+
+                            <button
+                                id="btnGenerationPrevious"
+                                class="btn btn-secondary"
+                                type="button"
+                                disabled
+                            >
+                                ← Anterior
+                            </button>
+
+                            <button
+                                id="btnGenerationNext"
+                                class="btn btn-primary"
+                                type="button"
+                            >
+                                Siguiente →
+                            </button>
+
+                        </div>
+
                     </div>
 
                 </div>
-                <button id="generateBtn" class="btn btn-primary">
-                    Generar sistema
-                </button>
-                <p id="configurationResult" class="message" role="status"></p>
+
             </section>
 
-            <section id="operations" class="block">
-                <h2>Operaciones</h2>
 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="memoryAddress">Dirección</label>
-                        <input type="text" id="memoryAddress" placeholder="0x2C" autocomplete="off" spellcheck="false">
-                    </div>
 
-                    <div class="form-group">
-                        <label for="memoryValue">Valor (byte)</label>
-                        <input type="text" id="memoryValue" placeholder="0xFF" autocomplete="off" spellcheck="false">
-                    </div>
+            <!-- ========================================= -->
+            <!-- PANEL 2: ACCESO MANUAL                     -->
+            <!-- ========================================= -->
+
+            <section
+                class="panel"
+                id="panelAcceso"
+            >
+
+                <div class="panel-header">
+
+                    <h2>
+                        🧠 Acceso manual a memoria
+                    </h2>
+
                 </div>
 
-                <p class="hint">Acepta hexadecimal (0x2C), binario (0b101100) o decimal (44).</p>
+                <div class="panel-body">
 
-                <p id="addressRange" class="hint">
-                    Rango disponible: pendiente de generar sistema.
-                </p>
 
-                <p id="executionStatus" class="hint" role="status">
-                    Sin operaciones en ejecución.
-                </p>
+                    <!-- LECTURA -->
 
-                <div class="button-group">
-                    <button id="readBtn" class="btn btn-primary">Leer</button>
-                    <button id="writeBtn" class="btn btn-primary">Escribir</button>
-                    <button id="flushBtn" class="btn btn-ghost">Vaciar caché</button>
-                    <button id="resetBtn" class="btn btn-ghost btn-danger">Reiniciar</button>
+                    <div class="operation-card">
+
+                        <h3>
+                            Lectura de memoria
+                        </h3>
+
+                        <div class="input-row">
+
+                            <div class="input-group">
+
+                                <label for="readAddress">
+                                    Dirección
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="readAddress"
+                                    placeholder="0x08"
+                                    autocomplete="off"
+                                >
+
+                            </div>
+
+                            <button
+                                id="btnRead"
+                                class="btn btn-success"
+                                type="button"
+                                disabled
+                            >
+                                📖 Leer
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ESCRITURA -->
+
+                    <div class="operation-card">
+
+                        <h3>
+                            Escritura de memoria
+                        </h3>
+
+                        <div class="input-row">
+
+                            <div class="input-group">
+
+                                <label for="writeAddress">
+                                    Dirección
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="writeAddress"
+                                    placeholder="0x00"
+                                    autocomplete="off"
+                                >
+
+                            </div>
+
+                            <div class="input-group">
+
+                                <label for="writeValue">
+                                    Valor del byte
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="writeValue"
+                                    placeholder="0xFF"
+                                    autocomplete="off"
+                                >
+
+                            </div>
+
+                            <button
+                                id="btnWrite"
+                                class="btn btn-warning"
+                                type="button"
+                                disabled
+                            >
+                                ✏️ Escribir
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FLUSH -->
+
+                    <div class="operation-card">
+
+                        <h3>
+                            Administración de caché
+                        </h3>
+
+                        <button
+                            id="btnFlush"
+                            class="btn btn-secondary btn-full"
+                            type="button"
+                            disabled
+                        >
+                            🧹 Vaciar bloques sucios (Flush)
+                        </button>
+
+                    </div>
+
+
+                    <!-- EXPLICACIONES -->
+
+                    <div class="checkbox-group">
+
+                        <input
+                            type="checkbox"
+                            id="stepByStep"
+                            checked
+                        >
+
+                        <label for="stepByStep">
+                            Mostrar explicaciones de las operaciones
+                        </label>
+
+                    </div>
+
+
+                    <!-- ================================= -->
+                    <!-- DESCOMPOSICIÓN TIO                -->
+                    <!-- ================================= -->
+
+                    <div class="address-breakdown">
+
+                        <div class="breakdown-header">
+
+                            <h3>
+                                🔢 Descomposición de dirección
+                            </h3>
+
+                            <div class="address-width-badge">
+
+                                Dirección:
+
+                                <strong id="addressTotalBits">
+                                    8 bits
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DIRECCIÓN BINARIA -->
+
+                        <div class="binary-address-box">
+
+                            <span>
+                                Dirección en binario
+                            </span>
+
+                            <strong id="fullBinaryAddress">
+                                Dirección no seleccionada
+                            </strong>
+
+                        </div>
+
+
+                        <!-- TAG / INDEX / OFFSET -->
+
+                        <div class="tio-grid">
+
+                            <div
+                                id="tagBox"
+                                class="tio-item tag"
+                            >
+
+                                <span>TAG</span>
+
+                                <strong id="tagValue">
+                                    Pendiente
+                                </strong>
+
+                                <small id="tagBitsLabel">
+                                    --
+                                </small>
+
+                            </div>
+
+
+                            <div
+                                id="indexBox"
+                                class="tio-item index"
+                            >
+
+                                <span>INDEX</span>
+
+                                <strong id="indexValue">
+                                    Pendiente
+                                </strong>
+
+                                <small id="indexBitsLabel">
+                                    --
+                                </small>
+
+                            </div>
+
+
+                            <div
+                                id="offsetBox"
+                                class="tio-item offset"
+                            >
+
+                                <span>OFFSET</span>
+
+                                <strong id="offsetValue">
+                                    Pendiente
+                                </strong>
+
+                                <small id="offsetBitsLabel">
+                                    --
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- EXPLICACIÓN -->
+
+                        <div
+                            id="addressExplanation"
+                            class="address-explanation"
+                        >
+                            Genera el sistema para visualizar
+                            los campos de dirección.
+                        </div>
+
+
+                        <!-- BOTÓN EXPLICAR -->
+
+                        <button
+                            id="btnExplainAddress"
+                            class="btn btn-primary btn-full"
+                            type="button"
+                            disabled
+                        >
+                            ▶ Explicar acceso paso a paso
+                        </button>
+
+
+                        <!-- CONTROLES DE EXPLICACIÓN -->
+
+                        <div
+                            id="accessStepControls"
+                            class="step-controls"
+                            hidden
+                        >
+
+                            <div class="step-progress">
+
+                                <span id="accessStepLabel">
+                                    Paso 0
+                                </span>
+
+                                <div class="progress-track">
+
+                                    <div
+                                        id="accessProgress"
+                                        class="progress-fill"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="step-buttons">
+
+                                <button
+                                    id="btnAccessPrevious"
+                                    class="btn btn-secondary"
+                                    type="button"
+                                    disabled
+                                >
+                                    ← Anterior
+                                </button>
+
+                                <button
+                                    id="btnAccessNext"
+                                    class="btn btn-success"
+                                    type="button"
+                                >
+                                    Siguiente →
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================================= -->
+                    <!-- SECUENCIA DE ACCESOS              -->
+                    <!-- ================================= -->
+
+                    <div class="operation-card">
+
+                        <h3>
+                            🔄 Secuencia de accesos
+                        </h3>
+
+                        <label for="accessSequence">
+                            Direcciones separadas por comas
+                        </label>
+
+                        <textarea
+                            id="accessSequence"
+                            rows="3"
+                            placeholder="8, 124, 48, 165, 80"
+                        ></textarea>
+
+
+                        <!-- OPCIONES -->
+
+                        <div class="sequence-options">
+
+                            <label class="checkbox-modern">
+
+                                <input
+                                    type="checkbox"
+                                    id="sequenceStepByStep"
+                                >
+
+                                <span class="checkbox-slider"></span>
+
+                                <span>
+                                    Ejecutar acceso por acceso
+                                </span>
+
+                            </label>
+
+
+                            <label class="checkbox-modern">
+
+                                <input
+                                    type="checkbox"
+                                    id="sequenceExplain"
+                                    checked
+                                >
+
+                                <span class="checkbox-slider"></span>
+
+                                <span>
+                                    Explicar cada operación
+                                </span>
+
+                            </label>
+
+                        </div>
+
+
+                        <!-- BOTONES -->
+
+                        <div class="button-group">
+
+                            <button
+                                id="btnExecuteSequence"
+                                class="btn btn-primary"
+                                type="button"
+                                disabled
+                            >
+                                ▶ Ejecutar secuencia
+                            </button>
+
+                            <button
+                                id="btnLoadReadTest"
+                                class="btn btn-secondary"
+                                type="button"
+                            >
+                                Prueba lecturas
+                            </button>
+
+                            <button
+                                id="btnLoadReplacementTest"
+                                class="btn btn-secondary"
+                                type="button"
+                            >
+                                Prueba reemplazo
+                            </button>
+
+                        </div>
+
+
+                        <!-- NAVEGACIÓN DE SECUENCIA -->
+
+                        <div
+                            id="sequenceControls"
+                            class="step-controls"
+                            hidden
+                        >
+
+                            <div class="step-progress">
+
+                                <span id="sequenceStepLabel">
+                                    Acceso 0 de 0
+                                </span>
+
+                                <div class="progress-track">
+
+                                    <div
+                                        id="sequenceProgress"
+                                        class="progress-fill"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="sequence-current-access">
+
+                                <span>
+                                    Próxima dirección:
+                                </span>
+
+                                <strong id="sequenceCurrentAddress">
+                                    --
+                                </strong>
+
+                            </div>
+
+
+                            <div class="step-buttons">
+
+                                <button
+                                    id="btnSequenceNext"
+                                    class="btn btn-success"
+                                    type="button"
+                                >
+                                    Ejecutar siguiente →
+                                </button>
+
+                                <button
+                                    id="btnSequenceFinish"
+                                    class="btn btn-primary"
+                                    type="button"
+                                >
+                                    Ejecutar restantes
+                                </button>
+
+                                <button
+                                    id="btnSequenceCancel"
+                                    class="btn btn-danger"
+                                    type="button"
+                                >
+                                    Cancelar
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <p id="operationResult" class="message" role="status"></p>
             </section>
 
-        </aside>
 
-        <!-- COLUMNA 2: DESCOMPOSICIÓN + ESTADO DE LA CACHÉ -->
-        <section id="visualization" class="sheet main-sheet">
 
-            <div class="sheet-head">
-                <h2>Descomposición de la dirección</h2>
-                <output id="addressReadout" class="readout" for="memoryAddress"></output>
-            </div>
+            <!-- ========================================= -->
+            <!-- PANEL 3: MENSAJES                         -->
+            <!-- ========================================= -->
 
-            <div class="tio-wrap">
-                <table id="tioTable" class="tio">
-                    <!-- JavaScript genera la tabla Tag / Index / Offset -->
-                </table>
-            </div>
+            <section
+                class="panel"
+                id="panelMensajes"
+            >
 
-            
-            <!-- Panel de explicación del direccionamiento -->
-            <div id="addressExplanation" class="explanation-panel">
-                <h3>Análisis de la dirección</h3>
-                <div id="explanationContent">
-                    Introduce una dirección para ver sus cálculos.
+                <div class="panel-header">
+
+                    <h2>
+                        💬 Mensajes de simulación
+                    </h2>
+
+                    <button
+                        id="btnClearMessages"
+                        class="btn btn-small"
+                        type="button"
+                    >
+                        Limpiar
+                    </button>
+
                 </div>
+
+                <div class="panel-body">
+
+                    <div
+                        id="simulationMessages"
+                        class="messages-container"
+                        role="log"
+                        aria-live="polite"
+                        aria-relevant="additions"
+                    >
+
+                        <div class="message message-info">
+
+                            Bienvenido al simulador.
+
+                            Configura los parámetros y genera
+                            el sistema para comenzar.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ========================================= -->
+            <!-- PANEL 4: HISTORIAL                        -->
+            <!-- ========================================= -->
+
+            <section
+                class="panel"
+                id="panelHistorial"
+            >
+
+                <div class="panel-header">
+
+                    <h2>
+                        📋 Historial de operaciones
+                    </h2>
+
+                    <button
+                        id="btnClearHistory"
+                        class="btn btn-small"
+                        type="button"
+                    >
+                        Limpiar
+                    </button>
+
+                </div>
+
+                <div class="panel-body">
+
+
+                    <!-- NAVEGADOR -->
+
+                    <div class="history-navigator">
+
+                        <div class="history-navigation-header">
+
+                            <h3>
+                                🕒 Revisar operaciones
+                            </h3>
+
+                            <span
+                                id="historyPosition"
+                                class="history-position"
+                            >
+                                Sin operaciones
+                            </span>
+
+                        </div>
+
+
+                        <div class="history-navigation-buttons">
+
+                            <button
+                                id="btnHistoryFirst"
+                                class="btn btn-secondary"
+                                type="button"
+                                disabled
+                            >
+                                ⏮ Inicio
+                            </button>
+
+                            <button
+                                id="btnHistoryPrevious"
+                                class="btn btn-secondary"
+                                type="button"
+                                disabled
+                            >
+                                ← Anterior
+                            </button>
+
+                            <button
+                                id="btnHistoryNext"
+                                class="btn btn-primary"
+                                type="button"
+                                disabled
+                            >
+                                Siguiente →
+                            </button>
+
+                            <button
+                                id="btnHistoryLast"
+                                class="btn btn-secondary"
+                                type="button"
+                                disabled
+                            >
+                                Final ⏭
+                            </button>
+
+                        </div>
+
+
+                        <!-- REVISIÓN HISTÓRICA -->
+
+                        <div
+                            id="historyReviewInfo"
+                            class="history-review-info"
+                            hidden
+                        >
+
+                            <strong>
+                                Modo revisión histórica
+                            </strong>
+
+                            <p id="historyReviewDescription">
+                                Visualizando una operación anterior.
+                            </p>
+
+                            <button
+                                id="btnReturnCurrent"
+                                class="btn btn-success"
+                                type="button"
+                            >
+                                Volver al estado actual
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TABLA DEL HISTORIAL -->
+
+                    <div class="table-container">
+
+                        <table class="data-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>#</th>
+
+                                    <th>Operación</th>
+
+                                    <th>Dirección</th>
+
+                                    <th>Resultado</th>
+
+                                    <th>Tipo de fallo</th>
+
+                                    <th>Conjunto</th>
+
+                                    <th>Reemplazo</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="historyTableBody">
+
+                                <tr>
+
+                                    <td
+                                        colspan="7"
+                                        class="empty-row"
+                                    >
+                                        No hay operaciones registradas.
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="button-group">
+
+                        <button
+                            id="btnExportHistory"
+                            class="btn btn-secondary"
+                            type="button"
+                        >
+                            📥 Exportar historial CSV
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ========================================= -->
+            <!-- PANEL 5: MEMORIA CACHÉ                    -->
+            <!-- ========================================= -->
+
+            <section
+                class="panel"
+                id="panelCache"
+            >
+
+                <div class="panel-header">
+
+                    <h2>
+                        💾 Memoria caché
+                    </h2>
+
+                </div>
+
+                <div class="panel-body">
+
+
+                    <!-- PROCESO DE CONSTRUCCIÓN -->
+
+                    <div
+                        id="cacheBuildStatus"
+                        class="build-status"
+                        hidden
+                    >
+
+                        <div class="build-status-header">
+
+                            <span>
+                                ⚙️ Construcción de caché
+                            </span>
+
+                            <strong id="cacheBuildStep">
+                                Preparando
+                            </strong>
+
+                        </div>
+
+                        <p id="cacheBuildDescription">
+                            La memoria caché todavía no ha sido construida.
+                        </p>
+
+                    </div>
+
+
+                    <!-- DESCRIPCIÓN -->
+
+                    <div id="cacheDescription">
+
+                        <p>
+                            Genera el sistema para visualizar
+                            los conjuntos y las vías.
+                        </p>
+
+                    </div>
+
+
+                    <!-- TABLA DE CACHÉ -->
+
+                    <div class="table-container">
+
+                        <table class="data-table cache-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Set</th>
+
+                                    <th>Vía</th>
+
+                                    <th>V</th>
+
+                                    <th>D</th>
+
+                                    <th>Tag</th>
+
+                                    <th>Datos del bloque</th>
+
+                                    <th>Estado</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="cacheTableBody">
+
+                                <tr>
+
+                                    <td
+                                        colspan="7"
+                                        class="empty-row"
+                                    >
+                                        Caché sin generar.
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ========================================= -->
+            <!-- PANEL 6: MEMORIA PRINCIPAL                -->
+            <!-- ========================================= -->
+
+            <section
+                class="panel"
+                id="panelMemoria"
+            >
+
+                <div class="panel-header">
+
+                    <h2>
+                        🗄️ Memoria principal (RAM)
+                    </h2>
+
+                </div>
+
+                <div class="panel-body">
+
+
+                    <!-- CONSTRUCCIÓN -->
+
+                    <div
+                        id="memoryBuildStatus"
+                        class="build-status"
+                        hidden
+                    >
+
+                        <div class="build-status-header">
+
+                            <span>
+                                🧠 Construcción de RAM
+                            </span>
+
+                            <strong id="memoryBuildStep">
+                                Preparando
+                            </strong>
+
+                        </div>
+
+                        <p id="memoryBuildDescription">
+                            Calculando capacidad de memoria principal.
+                        </p>
+
+                    </div>
+
+
+                    <!-- DESCRIPCIÓN -->
+
+                    <div id="memoryDescription">
+
+                        <p>
+                            Los datos de memoria se inicializarán
+                            con valores pseudoaleatorios
+                            reproducibles.
+                        </p>
+
+                    </div>
+
+
+                    <!-- VISUALIZACIÓN -->
+
+                    <div
+                        id="physicalMemory"
+                        class="physical-memory"
+                    >
+
+                        <div class="empty-state">
+                            Sin memoria inicializada.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+
+        <!-- ============================================= -->
+        <!-- PANEL 7: ESTADÍSTICAS                         -->
+        <!-- ============================================= -->
+
+        <section class="panel statistics-panel">
+
+            <div class="panel-header">
+
+                <h2>
+                    📊 Estadísticas y rendimiento
+                </h2>
+
             </div>
 
+            <div class="panel-body">
 
-            <div class="sheet-head">
-                <h2>Estado de la caché</h2>
-                <span class="legend">
-                    <span class="key key-index">Conjunto</span>
-                    <span class="key key-tag">Tag</span>
-                </span>
-            </div>
 
-            <div class="table-container scroll">
-                <table id="cacheTable" class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Conjunto</th>
-                            <th>Vía</th>
-                            <th title="Valid">V</th>
-                            <th title="Dirty">D</th>
-                            <th>Tag</th>
-                            <th class="left">Datos</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cacheTableBody">
-                        <!-- JavaScript generará las filas -->
-                    </tbody>
-                </table>
+                <!-- INDICADORES -->
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+
+                        <span class="stat-label">
+                            Accesos
+                        </span>
+
+                        <strong id="totalAccesses">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card success">
+
+                        <span class="stat-label">
+                            Cache Hits
+                        </span>
+
+                        <strong id="cacheHits">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card danger">
+
+                        <span class="stat-label">
+                            Cache Misses
+                        </span>
+
+                        <strong id="cacheMisses">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-label">
+                            Reemplazos
+                        </span>
+
+                        <strong id="replacementCount">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card success">
+
+                        <span class="stat-label">
+                            Hit Rate
+                        </span>
+
+                        <strong id="hitRate">
+                            0%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card danger">
+
+                        <span class="stat-label">
+                            Miss Rate
+                        </span>
+
+                        <strong id="missRate">
+                            0%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-label">
+                            AMAT
+                        </span>
+
+                        <strong id="amatValue">
+                            0 ns
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- CÁLCULO DE AMAT -->
+
+                <div class="formula-section">
+
+                    <h3>
+                        Cálculo del tiempo medio de acceso
+                    </h3>
+
+                    <div class="formula-inputs">
+
+                        <div class="form-group">
+
+                            <label for="cacheAccessTime">
+                                Tiempo de acceso a caché (ns)
+                            </label>
+
+                            <input
+                                id="cacheAccessTime"
+                                type="number"
+                                min="0"
+                                step="0.1"
+                                value="5"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="memoryAccessTime">
+                                Penalización por fallo (ns)
+                            </label>
+
+                            <input
+                                id="memoryAccessTime"
+                                type="number"
+                                min="0"
+                                step="0.1"
+                                value="100"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="amatExplanation">
+
+                        <p>
+                            AMAT = Tiempo HIT +
+                            (Miss Rate × Penalización por fallo)
+                        </p>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </section>
 
-        <!-- COLUMNA 3: ESTADÍSTICAS + HISTORIAL -->
-        <div class="side-right">
+    </main>
 
-            <section id="statistics" class="sheet">
-                <h2>Estadísticas</h2>
 
-                <dl class="stats-grid">
-                    <div class="stat">
-                        <dt>Accesos</dt>
-                        <dd id="totalAccesses">0</dd>
-                    </div>
-                    <div class="stat">
-                        <dt>Hits</dt>
-                        <dd id="hitCount" class="hit">0</dd>
-                    </div>
-                    <div class="stat">
-                        <dt>Misses</dt>
-                        <dd id="missCount" class="miss">0</dd>
-                    </div>
-                    <div class="stat">
-                        <dt>Miss rate</dt>
-                        <dd id="missRate">0%</dd>
-                    </div>
-                    <div class="stat">
-                        <dt>Reemplazos</dt>
-                        <dd id="replacementCount">0</dd>
-                    </div>
-                    <div class="stat">
-                        <dt>AMAT</dt>
-                        <dd id="amatValue">0 ns</dd>
-                    </div>
-                </dl>
-            </section>
 
-            <section id="history" class="sheet history">
-                <h2>Historial de accesos</h2>
+    <!-- ================================================= -->
+    <!-- 3. MODAL DE AYUDA                                 -->
+    <!-- ================================================= -->
 
-                <div class="table-container scroll">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Op</th>
-                                <th>Dirección</th>
-                                <th>Resultado</th>
-                                <th>Miss</th>
-                                <th>Conj.</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <tr class="empty">
-                                <td colspan="6">Aún no hay accesos. Lee o escribe una dirección para empezar.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+    <div
+        id="helpModal"
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Ayuda del simulador"
+    >
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2>
+                    ❔ Ayuda del simulador
+                </h2>
+
+                <button
+                    id="btnCloseHelp"
+                    class="btn btn-small"
+                    type="button"
+                    aria-label="Cerrar ayuda"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <h3>
+                    1. Configuración del sistema
+                </h3>
+
+                <p>
+                    Selecciona el bus de direcciones,
+                    la capacidad de caché, el tamaño
+                    de bloque y la asociatividad.
+                </p>
+
+
+                <h3>
+                    2. Tipos de organización
+                </h3>
+
+                <p>
+                    <strong>Mapeo directo:</strong>
+                    utiliza una vía por conjunto.
+                </p>
+
+                <p>
+                    <strong>Asociativo por conjuntos:</strong>
+                    utiliza dos o más vías por conjunto,
+                    sin llegar al número total de líneas.
+                </p>
+
+                <p>
+                    <strong>Totalmente asociativo:</strong>
+                    utiliza un único conjunto que contiene
+                    todas las líneas de caché.
+                </p>
+
+
+                <h3>
+                    3. Políticas de reemplazo
+                </h3>
+
+                <p>
+                    <strong>LRU:</strong>
+                    reemplaza el bloque menos recientemente usado.
+                </p>
+
+                <p>
+                    <strong>FIFO:</strong>
+                    reemplaza el bloque que ingresó primero.
+                </p>
+
+                <p>
+                    <strong>LFU:</strong>
+                    reemplaza el bloque menos frecuentemente usado.
+                </p>
+
+                <p>
+                    <strong>Random:</strong>
+                    reemplaza una vía seleccionada aleatoriamente.
+                </p>
+
+
+                <h3>
+                    4. Políticas de escritura
+                </h3>
+
+                <p>
+                    <strong>Write-back:</strong>
+                    modifica inicialmente la caché y
+                    actualiza RAM cuando corresponde.
+                </p>
+
+                <p>
+                    <strong>Write-through:</strong>
+                    actualiza caché y RAM inmediatamente.
+                </p>
+
+                <p>
+                    <strong>Write-allocate:</strong>
+                    carga el bloque en caché después de
+                    un fallo de escritura.
+                </p>
+
+                <p>
+                    <strong>No-write-allocate:</strong>
+                    escribe directamente en RAM cuando
+                    ocurre un fallo de escritura.
+                </p>
+
+
+                <h3>
+                    5. Bits V y D
+                </h3>
+
+                <p>
+                    <strong>V:</strong>
+                    bit de validez. Indica si la línea
+                    contiene un bloque válido.
+                </p>
+
+                <p>
+                    <strong>D:</strong>
+                    bit de modificación. Indica si el bloque
+                    contiene cambios pendientes de escritura
+                    en memoria principal.
+                </p>
+
+
+                <h3>
+                    6. Ejecución paso a paso
+                </h3>
+
+                <p>
+                    Puedes estudiar la generación del sistema,
+                    explicar los accesos y ejecutar secuencias
+                    una dirección a la vez.
+                </p>
+
+
+                <h3>
+                    7. Historial
+                </h3>
+
+                <p>
+                    Utiliza Anterior y Siguiente para
+                    revisar los estados históricos de RAM
+                    y caché sin modificar la simulación actual.
+                </p>
+
+
+                <h3>
+                    8. Estadísticas
+                </h3>
+
+                <p>
+                    El simulador calcula los aciertos,
+                    fallos, reemplazos y el tiempo
+                    medio de acceso a memoria.
+                </p>
+
+            </div>
 
         </div>
 
-    </main>
+    </div>
 
-    <footer>
-        <p>Simulador de Memoria Caché - Operacionales</p>
+
+
+    <!-- ================================================= -->
+    <!-- 4. PIE DE PÁGINA                                  -->
+    <!-- ================================================= -->
+
+    <footer class="footer">
+
+        <p>
+            Simulador de Memoria Caché 351 |
+            Sistemas Operacionales |
+            Universidad Industrial de Santander
+        </p>
+
     </footer>
 
+
+
+    <!-- ================================================= -->
+    <!-- 5. JAVASCRIPT                                     -->
+    <!-- ================================================= -->
+
+    <script
+        type="module"
+        src="js/main.js"
+    ></script>
+
 </body>
+
 </html>
